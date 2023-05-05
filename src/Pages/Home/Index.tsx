@@ -3,7 +3,14 @@ function App() {
   return (
     <div className="App">
       <Headers />
-      <h1>click here</h1>
+      <div
+        style={{
+          textAlign: "center",
+          margin: "230px auto",
+        }}
+      >
+        <h1 style={{ fontSize: "200px" }}>MAKEA</h1>
+      </div>
     </div>
   );
 }

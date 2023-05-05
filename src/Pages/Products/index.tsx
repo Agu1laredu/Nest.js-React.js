@@ -1,56 +1,122 @@
+import React from "react";
 import Headers from "../../Components/Headers/index";
-import Table from "react-bootstrap/Table";
+import Modals from "./ModalsSucces";
+import { Button, Table } from "react-bootstrap";
+export function Products() {
+  const [products, setProducts] = React.useState([] as any[]);
+  const newId = React.useRef<HTMLInputElement>(null);
+  const newName = React.useRef<HTMLInputElement>(null);
+  const newPrice = React.useRef<HTMLInputElement>(null);
+  const newStock = React.useRef<HTMLInputElement>(null);
 
-function Products() {
-  const products = [
-    {
-      id: 1,
-      name: "Sofá Chesterfield",
-      description:
-        "Sofá tapizado en cuero de alta calidad con patas de madera maciza. Disponible en varios colores y tamaños.",
-      price: 1000,
-      image: "https://www.example.com/images/chesterfield.jpg",
-      category: "sofas",
-      stock: 10,
-    },
-    {
-      id: 2,
-      name: "Mesa de centro de vidrio",
-      description:
-        "Mesa de centro de diseño moderno con base de metal y superficie de vidrio templado. Disponible en varios tamaños.",
-      price: 500,
-      image: "https://www.example.com/images/mesa_centro_vidrio.jpg",
-      category: "mesas",
-      stock: 5,
-    },
-  ];
+  function loadProducts() {
+    fetch("http://localhost:3001/api/products")
+      .then((response) => response.json())
+      .then((data) => setProducts(data));
+  }
+
+  React.useEffect(() => {
+    loadProducts();
+  }, []);
+
+  function deleteProduct(id: number) {
+    fetch(`http://localhost:3001/api/products/${id}`, {
+      method: "DELETE",
+    }).then(() => {
+      loadProducts();
+    });
+  }
+
+  function addProduct() {
+    fetch("http://localhost:3001/api/products", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: +(newId.current?.value || 0),
+        name: newName.current?.value,
+        price: +(newPrice.current?.value || 0),
+        stock: +(newStock.current?.value || 0),
+      }),
+    }).then(() => {
+      loadProducts();
+    });
+  }
+
   return (
-    <div className="App">
+    <div style={{ margin: "auto", textAlign: "center" }}>
       <Headers />
-      <h1>Productos</h1>
+      <h2 style={{ margin: "20px auto", fontSize: "100px" }}>YOUR PRODUCTS </h2>
       <Table striped bordered hover>
         <thead>
           <tr>
-            <th>#</th>
-            <th> Name</th>
-            <th>Price</th>
+            <th>Nombre</th>
+            <th>Precio</th>
             <th>Stock</th>
+            <th>Description</th>
+            <th>Eliminar/Agregar</th>
           </tr>
         </thead>
         <tbody>
-          {products.map((products) => (
-            <tr key={products.id}>
-              <td>{products.id}</td>
-              <td>{products.name}</td>
-              <td>{products.price}</td>
-              <td>{products.description}</td>
-              <td>{products.stock}</td>
+          {products.map((product) => (
+            <tr key={product.id}>
+              <td>{product.name}</td>
+              <td>{product.price}</td>
+              <td>{product.stock}</td>
+              <td>{product.description}</td>
+              <td>
+                <Button
+                  variant="danger"
+                  onClick={() => deleteProduct(product.id)}
+                >
+                  Eliminar
+                </Button>
+              </td>
             </tr>
           ))}
+          <tr key={0}>
+            <td>
+              <input
+                className="form-control"
+                type="number"
+                id="new-id"
+                ref={newId}
+              />
+            </td>
+            <td>
+              <input
+                className="form-control"
+                type="text"
+                id="new-name"
+                ref={newName}
+              />
+            </td>
+            <td>
+              <input
+                className="form-control"
+                type="number"
+                id="new-price"
+                ref={newPrice}
+              />
+            </td>
+            <td>
+              <input
+                className="form-control"
+                type="number"
+                id="new-stock"
+                ref={newStock}
+              />
+            </td>
+            <td>
+              <Button variant="success" onClick={() => addProduct()}>
+                Agregar
+              </Button>
+            </td>
+          </tr>
         </tbody>
       </Table>
+      <Modals />
     </div>
   );
 }
-
-export default Products;
