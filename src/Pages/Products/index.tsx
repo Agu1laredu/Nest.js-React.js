@@ -2,12 +2,14 @@ import React from "react";
 import Headers from "../../Components/Headers/index";
 import Modals from "./ModalsSucces";
 import { Button, Table } from "react-bootstrap";
+import Folletos from "../../assets/folletos.jpg";
 export function Products() {
   const [products, setProducts] = React.useState([] as any[]);
   const newId = React.useRef<HTMLInputElement>(null);
   const newName = React.useRef<HTMLInputElement>(null);
   const newPrice = React.useRef<HTMLInputElement>(null);
   const newStock = React.useRef<HTMLInputElement>(null);
+  const newDescription = React.useRef<HTMLInputElement>(null);
 
   function loadProducts() {
     fetch("http://localhost:3001/api/products")
@@ -37,7 +39,7 @@ export function Products() {
         id: +(newId.current?.value || 0),
         name: newName.current?.value,
         price: +(newPrice.current?.value || 0),
-        stock: +(newStock.current?.value || 0),
+        description: +(newDescription.current?.value || 0),
       }),
     }).then(() => {
       loadProducts();
@@ -79,16 +81,8 @@ export function Products() {
             <td>
               <input
                 className="form-control"
-                type="number"
-                id="new-id"
-                ref={newId}
-              />
-            </td>
-            <td>
-              <input
-                className="form-control"
                 type="text"
-                id="new-name"
+                id="new-id"
                 ref={newName}
               />
             </td>
@@ -96,7 +90,7 @@ export function Products() {
               <input
                 className="form-control"
                 type="number"
-                id="new-price"
+                id="new-name"
                 ref={newPrice}
               />
             </td>
@@ -104,8 +98,16 @@ export function Products() {
               <input
                 className="form-control"
                 type="number"
-                id="new-stock"
+                id="new-price"
                 ref={newStock}
+              />
+            </td>
+            <td>
+              <input
+                className="form-control"
+                type="text"
+                id="new-stock"
+                ref={newDescription}
               />
             </td>
             <td>
@@ -116,7 +118,10 @@ export function Products() {
           </tr>
         </tbody>
       </Table>
-      <Modals />
+      <div style={{ margin: "30px" }}>
+        <Modals />
+      </div>
+      <h1 style={{ fontSize: "200px" }}>MAKEA</h1>
     </div>
   );
 }
